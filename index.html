@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0b7d5a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CAL" />
+  <title>CAL — Calorie Tracker</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- ================= HOME ================= -->
+    <section id="view-home" class="view active">
+      <header class="app-header">
+        <h1>Today</h1>
+        <span id="home-date" class="header-sub"></span>
+      </header>
+
+      <div class="balance-card" id="balance-card">
+        <div class="balance-label">Calorie balance</div>
+        <div class="balance-value" id="balance-value">0</div>
+        <div class="balance-hint" id="balance-hint"></div>
+      </div>
+
+      <div class="breakdown">
+        <div class="breakdown-item">
+          <div class="bd-value intake" id="bd-intake">0</div>
+          <div class="bd-label">Intake</div>
+        </div>
+        <div class="breakdown-op">−</div>
+        <div class="breakdown-item">
+          <div class="bd-value burn" id="bd-burn">0</div>
+          <div class="bd-label">Burnt</div>
+        </div>
+        <div class="breakdown-op">−</div>
+        <div class="breakdown-item">
+          <div class="bd-value baseline" id="bd-baseline">0</div>
+          <div class="bd-label">Baseline</div>
+        </div>
+      </div>
+
+      <div class="quick-actions">
+        <button class="btn-big btn-intake" data-open="intake">
+          <span class="btn-big-plus">＋</span> Add Intake
+        </button>
+        <button class="btn-big btn-burn" data-open="burn">
+          <span class="btn-big-plus">＋</span> Add Burn
+        </button>
+      </div>
+
+      <div class="section-title">Today's entries</div>
+      <ul class="entry-list" id="today-entries"></ul>
+    </section>
+
+    <!-- ================= HISTORY ================= -->
+    <section id="view-history" class="view">
+      <header class="app-header"><h1>History</h1></header>
+
+      <div class="range-tabs" id="range-tabs">
+        <button data-range="7">7d</button>
+        <button data-range="30" class="active">30d</button>
+        <button data-range="90">90d</button>
+        <button data-range="0">All</button>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-value" id="stat-avg">0</div><div class="stat-label">Avg daily balance</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-days">0</div><div class="stat-label">Days logged</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-cum">0</div><div class="stat-label">Cumulative net</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-weight">0</div><div class="stat-label">Est. weight Δ</div></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">Daily net balance</div>
+        <canvas id="chart-balance" height="200"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Intake vs Burnt vs Baseline</div>
+        <canvas id="chart-io" height="200"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Cumulative net (weight trend proxy)</div>
+        <canvas id="chart-cum" height="200"></canvas>
+      </div>
+
+      <div class="section-title">Day by day</div>
+      <ul class="day-list" id="day-list"></ul>
+    </section>
+
+    <!-- ================= LIBRARY ================= -->
+    <section id="view-library" class="view">
+      <header class="app-header"><h1>Library</h1></header>
+
+      <div class="lib-head">
+        <div class="section-title">Saved meals</div>
+        <button class="btn-small" data-open="new-meal">＋ New meal</button>
+      </div>
+      <ul class="saved-list" id="saved-meals"></ul>
+
+      <div class="lib-head">
+        <div class="section-title">Saved activities</div>
+        <button class="btn-small" data-open="new-activity">＋ New activity</button>
+      </div>
+      <ul class="saved-list" id="saved-activities"></ul>
+    </section>
+
+    <!-- ================= SETTINGS ================= -->
+    <section id="view-settings" class="view">
+      <header class="app-header"><h1>Settings</h1></header>
+
+      <div class="setting-card">
+        <label for="baseline-input">Daily baseline calorie need</label>
+        <div class="stepper">
+          <button id="baseline-minus">−</button>
+          <input type="number" id="baseline-input" inputmode="numeric" />
+          <button id="baseline-plus">＋</button>
+        </div>
+        <p class="setting-hint">Your reference maintenance calories. Balance = Intake − Burnt − Baseline.</p>
+      </div>
+
+      <div class="setting-card">
+        <label>Backup &amp; restore</label>
+        <p class="setting-hint">Data lives only on this device. Export a backup before clearing your browser or switching phones.</p>
+        <div class="setting-btn-row">
+          <button class="btn-small" id="export-btn">Export backup</button>
+          <button class="btn-small" id="import-btn">Import backup</button>
+        </div>
+        <input type="file" id="import-file" accept="application/json" hidden />
+      </div>
+
+      <div class="setting-card danger">
+        <label>Danger zone</label>
+        <button class="btn-small btn-danger" id="clear-btn">Erase all data</button>
+      </div>
+
+      <p class="version-tag" id="version-tag"></p>
+    </section>
+  </div>
+
+  <!-- ================= BOTTOM NAV ================= -->
+  <nav class="tabbar">
+    <button class="tab active" data-view="home">
+      <span class="tab-icon">◎</span><span class="tab-text">Home</span>
+    </button>
+    <button class="tab" data-view="history">
+      <span class="tab-icon">📈</span><span class="tab-text">History</span>
+    </button>
+    <button class="tab" data-view="library">
+      <span class="tab-icon">☰</span><span class="tab-text">Library</span>
+    </button>
+    <button class="tab" data-view="settings">
+      <span class="tab-icon">⚙</span><span class="tab-text">Settings</span>
+    </button>
+  </nav>
+
+  <!-- ================= MODAL ROOT ================= -->
+  <div id="modal-root" class="modal-root" hidden></div>
+
+  <script src="js/vendor/chart.umd.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
