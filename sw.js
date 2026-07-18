@@ -1,6 +1,6 @@
 /* Service worker — offline app shell cache.
    Bump CACHE version whenever you change any cached file. */
-const CACHE = "cal-cache-v1";
+const CACHE = "cal-cache-v3";
 const ASSETS = [
   "./",
   "./index.html",

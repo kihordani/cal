@@ -5,7 +5,13 @@
       "Bash(curl -sL \"https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js\" -o js/vendor/chart.umd.min.js)",
       "Bash(node --check js/app.js)",
       "Bash(node --check sw.js)",
-      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('manifest.webmanifest'\\)\\); console.log\\('manifest OK'\\)\")"
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('manifest.webmanifest'\\)\\); console.log\\('manifest OK'\\)\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:5757/index.html)",
+      "Bash(curl -sI http://localhost:5757/index.html)",
+      "Bash(pkill -f \"serve -l 5757\")",
+      "Bash(pkill -f \"node -e\")",
+      "Bash(node -e ' *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:5859/index.html)"
     ]
   }
 }
